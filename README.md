@@ -22,6 +22,10 @@
 | Swipe up or down on the left | Brightness |
 | Drag left or right | Seek |
 
+## Resume
+
+Close the app at any moment, with or without pausing. The last video you watched picks up where you left it.
+
 ## Plays
 
 MP4, MKV, WebM, MOV, TS, AVI, FLV and MPG, including AC3, E-AC3, DTS and TrueHD audio.

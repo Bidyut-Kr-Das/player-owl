@@ -176,7 +176,7 @@ class PlayerActivity : Activity() {
             .build()
         player.addListener(listener)
         player.setVideoSurfaceView(surface)
-        player.setMediaItem(MediaItem.fromUri(uri))
+        player.setMediaItem(MediaItem.fromUri(uri), startPosition(readResume(), uri.toString()))
         player.prepare()
         player.playWhenReady = true
 
@@ -185,7 +185,13 @@ class PlayerActivity : Activity() {
 
     override fun onStop() {
         super.onStop()
-        if (::player.isInitialized) player.pause()
+        if (::player.isInitialized) {
+            player.pause()
+            // Every way out of the app passes through here: back, home, or swiping it away from recents.
+            if (player.playerError == null) {
+                writeResume(nextResume(readResume(), intent.data.toString(), player.currentPosition, player.duration))
+            }
+        }
     }
 
     override fun onDestroy() {

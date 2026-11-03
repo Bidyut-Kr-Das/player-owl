@@ -128,9 +128,17 @@ class LibraryActivity : Activity() {
     /** Runs on every return to the screen, so newly downloaded videos appear without a manual refresh. */
     private fun reload() {
         Thread {
-            val folders = toFolders(loadVideos(this))
+            val videos = loadVideos(this)
+            forgetDeletedVideo(videos)
+            val folders = toFolders(videos)
             runOnUiThread { if (!isDestroyed) show(folders) }
         }.start()
+    }
+
+    private fun forgetDeletedVideo(videos: List<Video>) {
+        val saved = readResume() ?: return
+        val indexed = videos.map { videoUri(it.id).toString() }.toSet()
+        if (isDeleted(saved.uri, indexed, videosUri.toString())) writeResume(null)
     }
 
     private fun show(folders: List<Folder>) {

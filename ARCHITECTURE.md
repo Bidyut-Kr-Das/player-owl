@@ -8,7 +8,7 @@ Quiet Player has two screens and a few small files. It uses framework views and 
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/architecture-dark.svg">
-  <img alt="LibraryActivity loads videos through Library.kt, which queries MediaStore, and sends a video URI to PlayerActivity. PlayerActivity exchanges touch and gesture events with Gestures.kt, uses PlayerMath.kt, drives ExoPlayer, and sets volume and brightness." src="docs/diagrams/architecture-light.svg">
+  <img alt="LibraryActivity loads videos through Library.kt, which queries MediaStore, and sends a video URI to PlayerActivity. PlayerActivity exchanges touch and gesture events with Gestures.kt, uses PlayerMath.kt, saves its position through Resume.kt, drives ExoPlayer, and sets volume and brightness." src="docs/diagrams/architecture-light.svg">
 </picture>
 
 | File | Job |
@@ -18,8 +18,17 @@ Quiet Player has two screens and a few small files. It uses framework views and 
 | `PlayerActivity.kt` | Owns ExoPlayer, the controls, the on-screen meter and system bar hiding. |
 | `Gestures.kt` | Turns raw touch points into gesture events. No Android or player types. |
 | `PlayerMath.kt` | Pure math for seek targets, level clamping and video fit. |
+| `Resume.kt` | Decides what to remember and stores it in SharedPreferences. |
 
 A file manager can also open `PlayerActivity` directly through its `ACTION_VIEW` intent filter. This reaches files that MediaStore does not index.
+
+## How resume works
+
+The app remembers one video: its URI and position. `PlayerActivity` saves in `onStop`, which runs for every normal way out of the app, and starts the video from the saved position when the URI matches.
+
+- **Finished videos are forgotten.** Closing within the last 5 seconds counts as finished, so the video restarts next time.
+- **An accidental open changes nothing.** Another video closed within 2 seconds does not replace the remembered one.
+- **Deleted videos are forgotten.** `LibraryActivity` compares the saved URI with the media index every time it loads.
 
 ## How a touch becomes an action
 
@@ -39,4 +48,4 @@ A file manager can also open `PlayerActivity` directly through its `ACTION_VIEW`
 
 ## Testing
 
-`./gradlew test` runs the JVM tests for `Gestures`, `PlayerMath` and `toFolders`. The activities and layouts have no automated tests, so check them on a device.
+`./gradlew test` runs the JVM tests for `Gestures`, `PlayerMath`, `Resume` and `toFolders`. The activities and layouts have no automated tests, so check them on a device.

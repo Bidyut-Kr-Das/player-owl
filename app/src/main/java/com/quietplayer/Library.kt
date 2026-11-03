@@ -25,7 +25,7 @@ fun toFolders(videos: List<Video>): List<Folder> =
         }
         .sortedByDescending { it.videos.first().modified }
 
-private val videosUri: Uri by lazy { MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL) }
+val videosUri: Uri by lazy { MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL) }
 
 fun videoUri(id: Long): Uri = ContentUris.withAppendedId(videosUri, id)
 
