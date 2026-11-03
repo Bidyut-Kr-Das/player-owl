@@ -20,7 +20,7 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 
-private class Row(val title: String, val subtitle: String, val badge: String, val thumbId: Long, val open: () -> Unit)
+private class Row(val title: String, val subtitle: String, val badge: String, val thumbId: Long, val stack: Int, val open: () -> Unit)
 
 /** Shows all folders, or the videos of one folder when started with [EXTRA_FOLDER]. */
 class LibraryActivity : Activity() {
@@ -42,15 +42,16 @@ class LibraryActivity : Activity() {
         override fun getItem(position: Int) = rows[position]
         override fun getItemId(position: Int) = position.toLong()
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: LayoutInflater.from(parent.context).inflate(R.layout.item_row, parent, false)
+            val view = convertView ?: LayoutInflater.from(parent.context)
+                .inflate(if (folderPath == null) R.layout.item_folder else R.layout.item_row, parent, false)
             val row = rows[position]
             view.findViewById<TextView>(R.id.row_title).text = row.title
             view.findViewById<TextView>(R.id.row_subtitle).text = row.subtitle
-            view.findViewById<TextView>(R.id.row_badge).apply {
-                text = row.badge
-                visibility = if (row.badge.isEmpty()) View.GONE else View.VISIBLE
-            }
-            Thumbnails.bind(view.findViewById<ImageView>(R.id.row_thumb), row.thumbId)
+            view.findViewById<TextView?>(R.id.row_badge)?.text = row.badge
+            view.findViewById<View?>(R.id.sheet_front)?.visibility = if (row.stack > 1) View.VISIBLE else View.INVISIBLE
+            view.findViewById<View?>(R.id.sheet_back)?.visibility = if (row.stack > 2) View.VISIBLE else View.INVISIBLE
+            val thumbWidth = if (folderPath == null) 640 else 320
+            Thumbnails.bind(view.findViewById<ImageView>(R.id.row_thumb), row.thumbId, thumbWidth)
             return view
         }
     }
@@ -142,7 +143,7 @@ class LibraryActivity : Activity() {
             }
             folder != null -> {
                 title.text = folder.name
-                subtitle.text = "${count(folder.videos.size)} · ${size(folder.totalSize)}"
+                subtitle.text = "${count(folder.videos.size)}, ${size(folder.totalSize)}"
                 rows = folder.videos.map { it.toRow() }
             }
             else -> {
@@ -155,11 +156,11 @@ class LibraryActivity : Activity() {
         adapter.notifyDataSetChanged()
     }
 
-    private fun Folder.toRow() = Row(name, "${count(videos.size)} · ${size(totalSize)}", "", videos.first().id) {
+    private fun Folder.toRow() = Row(name, "${count(videos.size)}, ${size(totalSize)}", "", videos.first().id, videos.size) {
         startActivity(Intent(this@LibraryActivity, LibraryActivity::class.java).putExtra(EXTRA_FOLDER, path))
     }
 
-    private fun Video.toRow() = Row(name, size(size), DateUtils.formatElapsedTime(durationMs / 1000), id) {
+    private fun Video.toRow() = Row(name, size(size), DateUtils.formatElapsedTime(durationMs / 1000), id, 1) {
         startActivity(Intent(Intent.ACTION_VIEW, videoUri(id), this@LibraryActivity, PlayerActivity::class.java))
     }
 

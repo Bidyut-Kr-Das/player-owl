@@ -76,31 +76,36 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="@drawable/scrim_bottom"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingTop="32dp"
-            android:paddingBottom="8dp">
-
-            <TextView
-                android:id="@+id/position"
-                style="@style/TimeText"
-                android:layout_marginStart="20dp"
-                android:text="00:00" />
+            android:orientation="vertical"
+            android:paddingTop="40dp"
+            android:paddingBottom="12dp">
 
             <SeekBar
                 android:id="@+id/seek_bar"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:paddingHorizontal="24dp"
                 android:progressDrawable="@drawable/seek_progress"
                 android:splitTrack="false"
                 android:thumb="@drawable/seek_thumb" />
 
-            <TextView
-                android:id="@+id/duration"
-                style="@style/TimeText"
-                android:layout_marginEnd="20dp"
-                android:text="00:00" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="24dp">
+
+                <TextView
+                    android:id="@+id/position"
+                    style="@style/TimeText"
+                    android:layout_gravity="start"
+                    android:text="00:00" />
+
+                <TextView
+                    android:id="@+id/duration"
+                    style="@style/TimeText"
+                    android:layout_gravity="end"
+                    android:text="00:00" />
+            </FrameLayout>
         </LinearLayout>
     </FrameLayout>
 
@@ -112,26 +117,11 @@
         android:alpha="0"
         android:background="@drawable/bg_hud"
         android:gravity="center"
-        android:minWidth="200dp"
+        android:minWidth="168dp"
         android:orientation="vertical"
         android:paddingHorizontal="24dp"
         android:paddingVertical="16dp"
         android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/hud_icon"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:importantForAccessibility="no" />
-
-        <ProgressBar
-            android:id="@+id/hud_level"
-            style="@android:style/Widget.Material.ProgressBar.Horizontal"
-            android:layout_width="152dp"
-            android:layout_height="4dp"
-            android:layout_marginTop="12dp"
-            android:max="1000"
-            android:progressDrawable="@drawable/seek_progress" />
 
         <TextView
             android:id="@+id/hud_title"
@@ -148,5 +138,34 @@
             style="@style/TimeText"
             android:layout_marginTop="2dp"
             android:textColor="@color/muted" />
+    </LinearLayout>
+
+    <!-- Slim vertical level meter. Placed at the edge opposite the swiping thumb at run time. -->
+    <LinearLayout
+        android:id="@+id/meter"
+        android:layout_width="32dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center_vertical"
+        android:alpha="0"
+        android:background="@drawable/bg_hud"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingVertical="14dp"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/meter_level"
+            style="@android:style/Widget.Material.ProgressBar.Horizontal"
+            android:layout_width="4dp"
+            android:layout_height="160dp"
+            android:max="1000"
+            android:progressDrawable="@drawable/meter_progress" />
+
+        <ImageView
+            android:id="@+id/meter_icon"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginTop="10dp"
+            android:importantForAccessibility="no" />
     </LinearLayout>
 </FrameLayout>

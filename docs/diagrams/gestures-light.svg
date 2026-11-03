@@ -13,7 +13,7 @@
       #gestures-light-root .z { font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 9px; font-weight: 500; fill: #6B655F; letter-spacing: 0.14em; }
       #gestures-light-root .c { font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif; font-style: italic; font-size: 15px; fill: #4E4A45; }</style>
 <marker id="gestures-light-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4E4A45"/></marker>
-<marker id="gestures-light-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#A8610A"/></marker>
+<marker id="gestures-light-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2456C4"/></marker>
 </defs>
 <rect width="100%" height="100%" fill="#FBF9F7"/>
 <path d="M120,34 V56" fill="none" stroke="#4E4A45" stroke-width="1.2" marker-end="url(#gestures-light-arrow)"/>
@@ -23,7 +23,7 @@
 <rect x="452.0" y="80" width="56" height="14" rx="2" fill="#FBF9F7"/><text class="l" x="480" y="90" text-anchor="middle">VERTICAL</text>
 <path d="M680,100 H760" fill="none" stroke="#4E4A45" stroke-width="1.2" marker-end="url(#gestures-light-arrow)"/>
 <rect x="710.0" y="80" width="20" height="14" rx="2" fill="#FBF9F7"/><text class="l" x="720" y="90" text-anchor="middle">NO</text>
-<path d="M120,144 V204" fill="none" stroke="#A8610A" stroke-width="1.2" marker-end="url(#gestures-light-arrow-accent)"/>
+<path d="M120,144 V204" fill="none" stroke="#2456C4" stroke-width="1.2" marker-end="url(#gestures-light-arrow-accent)"/>
 <rect x="124" y="168" width="50" height="14" rx="2" fill="#FBF9F7"/><text class="l" x="128" y="178" text-anchor="start">NO: TAP</text>
 <path d="M360,144 V204" fill="none" stroke="#4E4A45" stroke-width="1.2" marker-end="url(#gestures-light-arrow)"/>
 <rect x="364" y="168" width="68" height="14" rx="2" fill="#FBF9F7"/><text class="l" x="368" y="178" text-anchor="start">HORIZONTAL</text>
@@ -38,10 +38,10 @@
 <polygon points="360,56 440,100 360,144 280,100" fill="#FBF9F7"/><polygon points="360,56 440,100 360,144 280,100" fill="#FFFFFF" stroke="#1A1918" stroke-width="1"/><text class="n" x="360" y="97" text-anchor="middle">Which</text><text class="n" x="360" y="114" text-anchor="middle">axis?</text>
 <polygon points="600,56 680,100 600,144 520,100" fill="#FBF9F7"/><polygon points="600,56 680,100 600,144 520,100" fill="#FFFFFF" stroke="#1A1918" stroke-width="1"/><text class="n" x="600" y="97" text-anchor="middle">Began on top</text><text class="n" x="600" y="114" text-anchor="middle">or bottom edge?</text>
 <polygon points="840,56 920,100 840,144 760,100" fill="#FBF9F7"/><polygon points="840,56 920,100 840,144 760,100" fill="#FFFFFF" stroke="#1A1918" stroke-width="1"/><text class="n" x="840" y="97" text-anchor="middle">Which</text><text class="n" x="840" y="114" text-anchor="middle">half?</text>
-<rect x="40" y="204" width="160" height="64" rx="6" fill="#FBF9F7"/><rect x="40" y="204" width="160" height="64" rx="6" fill="#a8610a" stroke="#A8610A" stroke-width="1" fill-opacity="0.08"/><text class="n" x="120.0" y="232" text-anchor="middle">togglePlay()</text><text class="s" x="120.0" y="250" text-anchor="middle">play or pause</text>
-<rect x="280" y="204" width="160" height="64" rx="6" fill="#FBF9F7"/><rect x="280" y="204" width="160" height="64" rx="6" fill="#FFFFFF" stroke="#1A1918" stroke-width="1"/><text class="n" x="360.0" y="232" text-anchor="middle">scrub()</text><text class="s" x="360.0" y="250" text-anchor="middle">seekTo, then show time</text>
-<rect x="760" y="204" width="160" height="64" rx="6" fill="#FBF9F7"/><rect x="760" y="204" width="160" height="64" rx="6" fill="#FFFFFF" stroke="#1A1918" stroke-width="1"/><text class="n" x="840.0" y="232" text-anchor="middle">changeBrightness()</text><text class="s" x="840.0" y="250" text-anchor="middle">window brightness</text>
-<rect x="760" y="300" width="160" height="64" rx="6" fill="#FBF9F7"/><rect x="760" y="300" width="160" height="64" rx="6" fill="#FFFFFF" stroke="#1A1918" stroke-width="1"/><text class="n" x="840.0" y="328" text-anchor="middle">changeVolume()</text><text class="s" x="840.0" y="346" text-anchor="middle">media stream volume</text>
+<rect x="40" y="204" width="160" height="64" rx="6" fill="#FBF9F7"/><rect x="40" y="204" width="160" height="64" rx="6" fill="#2456c4" stroke="#2456C4" stroke-width="1" fill-opacity="0.08"/><text class="n" x="120.0" y="232" text-anchor="middle">setControlsVisible()</text><text class="s" x="120.0" y="250" text-anchor="middle">show or hide the panel</text>
+<rect x="280" y="204" width="160" height="64" rx="6" fill="#FBF9F7"/><rect x="280" y="204" width="160" height="64" rx="6" fill="#FFFFFF" stroke="#1A1918" stroke-width="1"/><text class="n" x="360.0" y="232" text-anchor="middle">scrub()</text><text class="s" x="360.0" y="250" text-anchor="middle">seekTo, time centred</text>
+<rect x="760" y="204" width="160" height="64" rx="6" fill="#FBF9F7"/><rect x="760" y="204" width="160" height="64" rx="6" fill="#FFFFFF" stroke="#1A1918" stroke-width="1"/><text class="n" x="840.0" y="232" text-anchor="middle">changeBrightness()</text><text class="s" x="840.0" y="250" text-anchor="middle">window, meter on right</text>
+<rect x="760" y="300" width="160" height="64" rx="6" fill="#FBF9F7"/><rect x="760" y="300" width="160" height="64" rx="6" fill="#FFFFFF" stroke="#1A1918" stroke-width="1"/><text class="n" x="840.0" y="328" text-anchor="middle">changeVolume()</text><text class="s" x="840.0" y="346" text-anchor="middle">stream, meter on left</text>
 <rect x="520" y="204" width="160" height="64" rx="6" fill="#FBF9F7"/><rect x="520" y="204" width="160" height="64" rx="6" fill="#1a1918" stroke="#1a1918" stroke-width="1" fill-opacity="0.05" stroke-opacity="0.14"/><text class="n" x="600.0" y="232" text-anchor="middle">Ignored</text><text class="s" x="600.0" y="250" text-anchor="middle">reveals the system bars</text>
 <text class="c" x="40" y="328">A second finger cancels the gesture. A running drag still ends cleanly.</text>
 </svg>

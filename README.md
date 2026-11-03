@@ -6,7 +6,7 @@
 
 [![Tech stack](https://skillicons.dev/icons?i=kotlin,androidstudio,gradle,git)](https://skillicons.dev)
 
-![APK size](https://img.shields.io/badge/APK-2.4_MB-FFB547?style=for-the-badge)
+![APK size](https://img.shields.io/badge/APK-2.4_MB-9CC2FF?style=for-the-badge)
 ![Ads](https://img.shields.io/badge/ads-none-2ECC71?style=for-the-badge)
 ![Android](https://img.shields.io/badge/Android-11%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 ![Engine](https://img.shields.io/badge/Media3-ExoPlayer-7F52FF?style=for-the-badge)
@@ -17,7 +17,7 @@
 
 | Gesture | Action |
 |:---|:---|
-| Single tap | Play or pause |
+| Single tap | Show or hide the controls |
 | Swipe up or down on the right | Volume |
 | Swipe up or down on the left | Brightness |
 | Drag left or right | Seek |

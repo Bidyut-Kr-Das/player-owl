@@ -45,4 +45,19 @@ class PlayerMathTest {
     @Test fun `unknown video size fills the box`() {
         assertEquals(1000 to 500, fitInside(0, 0, 1f, 1000, 500))
     }
+
+    @Test fun `volume swiped on the right puts its meter at the left edge`() {
+        assertEquals(40f, meterX(GestureEvent.Volume(0.1f), 40f, 960f, 30f))
+    }
+
+    @Test fun `brightness swiped on the left puts its meter at the right edge`() {
+        assertEquals(930f, meterX(GestureEvent.Brightness(0.1f), 40f, 960f, 30f))
+    }
+
+    @Test fun `events without a meter do not move it`() {
+        assertEquals(null, meterX(GestureEvent.Seek(0.1f), 40f, 960f, 30f))
+        assertEquals(null, meterX(GestureEvent.Tap, 40f, 960f, 30f))
+        assertEquals(null, meterX(GestureEvent.SeekEnd, 40f, 960f, 30f))
+        assertEquals(null, meterX(GestureEvent.AdjustEnd, 40f, 960f, 30f))
+    }
 }

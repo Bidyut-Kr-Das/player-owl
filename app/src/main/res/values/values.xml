@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg">#0E0E10</color>
-    <color name="surface">#1C1C20</color>
-    <color name="text">#F4F2EE</color>
-    <color name="muted">#A0A0A8</color>
-    <color name="accent">#FFB547</color>
-    <color name="on_accent">#1A1205</color>
-    <color name="glass">#D91C1C20</color>
-    <color name="track">#40FFFFFF</color>
+    <color name="bg">#000000</color>
+    <color name="surface">#1A1A1A</color>
+    <color name="text">#F5F5F5</color>
+    <color name="muted">#A6A6A6</color>
+    <color name="accent">#9CC2FF</color>
+    <color name="on_accent">#08172E</color>
+    <color name="glass">#CC262626</color>
+    <color name="track">#4DFFFFFF</color>
 
     <string name="app_name">Quiet Player</string>
     <string name="folders">Folders</string>
     <string name="back">Back</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
-    <string name="video_surface">Video. Tap to play or pause.</string>
+    <string name="video_surface">Video. Tap to show or hide the controls.</string>
     <string name="permission_title">Your videos live here</string>
     <string name="permission_body">Allow access to videos so your Download folder and other folders can show up.</string>
     <string name="permission_action">Allow access</string>
@@ -53,7 +53,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textSize">13sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:fontFeatureSettings">tnum</item>
     </style>
 </resources>

@@ -40,6 +40,7 @@ import kotlin.math.roundToInt
 private const val HIDE_CONTROLS_MS = 2500L
 private const val HIDE_HUD_MS = 500L
 private const val TICK_MS = 250L
+private const val METER_MARGIN_DP = 12
 private const val MIN_BRIGHTNESS = 0.01f // Exactly 0 turns some panels fully off.
 
 @OptIn(UnstableApi::class)
@@ -57,20 +58,30 @@ class PlayerActivity : Activity() {
     private lateinit var duration: TextView
     private lateinit var error: TextView
     private lateinit var hud: View
-    private lateinit var hudIcon: ImageView
-    private lateinit var hudLevel: ProgressBar
+    private lateinit var meter: View
+    private lateinit var meterIcon: ImageView
+    private lateinit var meterLevel: ProgressBar
     private lateinit var hudTitle: TextView
     private lateinit var hudDetail: TextView
 
     private var videoSize = VideoSize.UNKNOWN
     private var seekStart: Long? = null
     private var adjustStart: Float? = null
+    private var volumeStep = 0
+    private var safeLeft = 0
+    private var safeRight = 0
+    private val volumeMax by lazy { audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC) }
 
     private val hideControls = Runnable {
-        val keep = !player.playWhenReady || seekBar.isPressed || error.visibility == View.VISIBLE
-        if (!keep) setControlsVisible(false)
+        if (wantsPlay && !seekBar.isPressed && error.visibility != View.VISIBLE) setControlsVisible(false)
     }
-    private val hideHud = Runnable { hud.animate().alpha(0f).setDuration(180).withEndAction { hud.visibility = View.GONE }.start() }
+    private val wantsPlay get() = player.playWhenReady && player.playbackState != Player.STATE_ENDED
+    private var controlsShown = false
+    private val hideHud = Runnable {
+        for (view in listOf(hud, meter)) {
+            view.animate().alpha(0f).setDuration(180).withEndAction { view.visibility = View.GONE }.start()
+        }
+    }
     private val tick = object : Runnable {
         override fun run() {
             updateProgress()
@@ -89,7 +100,10 @@ class PlayerActivity : Activity() {
             fitVideo()
         }
 
-        override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) = syncPlayState()
+        override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+            syncPlayState()
+            if (!playWhenReady) setControlsVisible(true) // Also covers pauses we did not start, like a phone call.
+        }
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             if (isPlaying) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -131,15 +145,16 @@ class PlayerActivity : Activity() {
         duration = findViewById(R.id.duration)
         error = findViewById(R.id.error)
         hud = findViewById(R.id.hud)
-        hudIcon = findViewById(R.id.hud_icon)
-        hudLevel = findViewById(R.id.hud_level)
+        meter = findViewById(R.id.meter)
+        meterIcon = findViewById(R.id.meter_icon)
+        meterLevel = findViewById(R.id.meter_level)
         hudTitle = findViewById(R.id.hud_title)
         hudDetail = findViewById(R.id.hud_detail)
 
         findViewById<TextView>(R.id.video_title).text = displayName(uri)
         findViewById<View>(R.id.back).setOnClickListener { finish() }
         playPause.setOnClickListener { togglePlay() }
-        root.setOnClickListener { togglePlay() }
+        root.setOnClickListener { if (error.visibility != View.VISIBLE) setControlsVisible(!controlsShown) }
         root.setOnTouchListener { view, event -> onTouch(view, event) }
         root.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             root.post(::fitVideo) // Changing a child's size during layout can be dropped; do it right after.
@@ -166,7 +181,6 @@ class PlayerActivity : Activity() {
         player.playWhenReady = true
 
         setControlsVisible(true)
-        syncPlayState()
     }
 
     override fun onStop() {
@@ -205,6 +219,9 @@ class PlayerActivity : Activity() {
     }
 
     private fun apply(event: GestureEvent) {
+        val margin = METER_MARGIN_DP * resources.displayMetrics.density
+        meterX(event, safeLeft + margin, root.width - safeRight - margin, meter.layoutParams.width.toFloat())
+            ?.let { meter.translationX = it }
         when (event) {
             GestureEvent.Tap -> root.performClick()
             is GestureEvent.Volume -> changeVolume(event.change)
@@ -222,7 +239,6 @@ class PlayerActivity : Activity() {
     }
 
     private fun togglePlay() {
-        if (error.visibility == View.VISIBLE) return
         if (player.playbackState == Player.STATE_ENDED) {
             player.seekTo(0)
             player.playWhenReady = true
@@ -231,20 +247,21 @@ class PlayerActivity : Activity() {
         }
     }
 
-    /** The single place that keeps the icon and the controls in line with the player, whoever changed it. */
+    /** The single place that keeps the icon and the auto-hide timer in line with the player, whoever changed it. */
     private fun syncPlayState() {
-        val showPause = player.playWhenReady && player.playbackState != Player.STATE_ENDED
-        playPause.setImageResource(if (showPause) R.drawable.ic_pause else R.drawable.ic_play)
-        playPause.contentDescription = getString(if (showPause) R.string.pause else R.string.play)
+        playPause.setImageResource(if (wantsPlay) R.drawable.ic_pause else R.drawable.ic_play)
+        playPause.contentDescription = getString(if (wantsPlay) R.string.pause else R.string.play)
         root.removeCallbacks(hideControls)
-        if (showPause) root.postDelayed(hideControls, HIDE_CONTROLS_MS) else setControlsVisible(true)
+        if (wantsPlay && controlsShown) root.postDelayed(hideControls, HIDE_CONTROLS_MS)
     }
 
     private fun setControlsVisible(visible: Boolean) {
+        controlsShown = visible
+        syncPlayState()
         root.removeCallbacks(tick)
         if (visible) {
             controls.visibility = View.VISIBLE
-            controls.animate().alpha(1f).setDuration(160).withEndAction(null).start()
+            controls.animate().alpha(1f).setDuration(120).withEndAction(null).start()
             tick.run()
         } else {
             controls.animate().alpha(0f).setDuration(220).withEndAction { controls.visibility = View.GONE }.start()
@@ -286,7 +303,9 @@ class PlayerActivity : Activity() {
         val target = seekTarget(start, fraction, player.duration.coerceAtLeast(0))
         player.seekTo(target)
         val delta = target - start
-        showHud(null, null, "${if (delta < 0) "−" else "+"}${formatTime(abs(delta))}", "${formatTime(target)} / ${formatTime(player.duration)}")
+        hudTitle.text = "${if (delta < 0) "−" else "+"}${formatTime(abs(delta))}"
+        hudDetail.text = "${formatTime(target)} / ${formatTime(player.duration)}"
+        reveal(hud, meter)
     }
 
     private fun endScrub() {
@@ -295,11 +314,18 @@ class PlayerActivity : Activity() {
     }
 
     private fun changeVolume(change: Float) {
-        val max = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-        val start = adjustStart ?: (audio.getStreamVolume(AudioManager.STREAM_MUSIC).toFloat() / max).also { adjustStart = it }
+        val start = adjustStart ?: run {
+            volumeStep = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
+            (volumeStep.toFloat() / volumeMax).also { adjustStart = it }
+        }
         val level = adjustLevel(start, change)
-        audio.setStreamVolume(AudioManager.STREAM_MUSIC, (level * max).roundToInt(), 0)
-        showHud(R.drawable.ic_volume, level, null, null)
+        val step = (level * volumeMax).roundToInt()
+        // Each call blocks on a system service, so only make it when the step really changes.
+        if (step != volumeStep) {
+            volumeStep = step
+            audio.setStreamVolume(AudioManager.STREAM_MUSIC, step, 0)
+        }
+        showMeter(R.drawable.ic_volume, level)
     }
 
     private fun changeBrightness(change: Float) {
@@ -308,7 +334,7 @@ class PlayerActivity : Activity() {
         val level = adjustLevel(start, change).coerceAtLeast(MIN_BRIGHTNESS)
         attributes.screenBrightness = level
         window.attributes = attributes
-        showHud(R.drawable.ic_brightness, level, null, null)
+        showMeter(R.drawable.ic_brightness, level)
     }
 
     // ponytail: the system setting is not linear on every phone, so the first drag can jump slightly.
@@ -316,18 +342,22 @@ class PlayerActivity : Activity() {
         if (window >= 0) window
         else Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, 128) / 255f
 
-    private fun showHud(icon: Int?, level: Float?, title: String?, detail: String?) {
+    private fun showMeter(icon: Int, level: Float) {
+        meterIcon.setImageResource(icon)
+        meterLevel.progress = (level * meterLevel.max).roundToInt()
+        reveal(meter, hud)
+    }
+
+    /** Only one indicator shows at a time, even when a new drag starts before the last one has faded. */
+    private fun reveal(shown: View, other: View) {
         root.removeCallbacks(hideHud)
-        hudIcon.visibility = if (icon != null) View.VISIBLE else View.GONE
-        icon?.let(hudIcon::setImageResource)
-        hudLevel.visibility = if (level != null) View.VISIBLE else View.GONE
-        level?.let { hudLevel.progress = (it * hudLevel.max).roundToInt() }
-        hudTitle.visibility = if (title != null) View.VISIBLE else View.GONE
-        hudTitle.text = title
-        hudDetail.visibility = if (detail != null) View.VISIBLE else View.GONE
-        hudDetail.text = detail
-        hud.visibility = View.VISIBLE
-        hud.animate().alpha(1f).setDuration(100).withEndAction(null).start()
+        other.animate().cancel()
+        other.alpha = 0f
+        other.visibility = View.GONE
+        // No fade-in. This runs on every finger move, and a fade restarted that often barely becomes visible.
+        shown.animate().cancel()
+        shown.alpha = 1f
+        shown.visibility = View.VISIBLE
     }
 
     private fun scheduleHudHide() = root.postDelayed(hideHud, HIDE_HUD_MS)
@@ -336,7 +366,6 @@ class PlayerActivity : Activity() {
         error.setText(message)
         error.visibility = View.VISIBLE
         playPause.visibility = View.GONE
-        root.removeCallbacks(hideControls)
         setControlsVisible(true)
     }
 
@@ -368,6 +397,8 @@ class PlayerActivity : Activity() {
         val bottomPad = bottom.paddingBottom
         root.setOnApplyWindowInsetsListener { _, insets ->
             val safe = insets.getInsetsIgnoringVisibility(WindowInsets.Type.displayCutout())
+            safeLeft = safe.left
+            safeRight = safe.right
             top.setPadding(safe.left, topPad + safe.top, safe.right, top.paddingBottom)
             bottom.setPadding(safe.left, bottom.paddingTop, safe.right, bottomPad + safe.bottom)
             insets
