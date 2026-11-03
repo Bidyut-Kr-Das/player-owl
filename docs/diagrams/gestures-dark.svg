@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 960 384" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="gestures-dark-title gestures-dark-desc" id="gestures-dark-root">
+<title id="gestures-dark-title">Quiet Player touch handling</title>
+<desc id="gestures-dark-desc">A touch is a tap unless it moves past the slop. Horizontal drags seek. Vertical drags change brightness on the left half and volume on the right, unless they began on a system edge.</desc>
+<defs>
+      <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Serif:ital@0;1&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Serif+KR:wght@400&amp;family=Noto+Sans+TC:wght@400;500;600&amp;family=Noto+Serif+TC:wght@400&amp;display=swap');
+      #gestures-dark-root { --paper: #121110; --ink: #F2EFEA; }
+      #gestures-dark-root { color: #F2EFEA; font-family: 'Geist', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+      #gestures-dark-root .diagram-container { width: 100%; overflow-x: auto; }
+      #gestures-dark-root .n { font-family: 'Geist', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; fill: #F2EFEA; }
+      #gestures-dark-root .s { font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 10px; fill: #C8C2BA; }
+      #gestures-dark-root .l { font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 9px; fill: #A39C94; letter-spacing: 0.06em; }
+      #gestures-dark-root .z { font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 9px; font-weight: 500; fill: #A39C94; letter-spacing: 0.14em; }
+      #gestures-dark-root .c { font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif; font-style: italic; font-size: 15px; fill: #C8C2BA; }</style>
+<marker id="gestures-dark-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#C8C2BA"/></marker>
+<marker id="gestures-dark-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#F2B155"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#121110"/>
+<path d="M120,34 V56" fill="none" stroke="#C8C2BA" stroke-width="1.2" marker-end="url(#gestures-dark-arrow)"/>
+<path d="M200,100 H280" fill="none" stroke="#C8C2BA" stroke-width="1.2" marker-end="url(#gestures-dark-arrow)"/>
+<rect x="227.0" y="80" width="26" height="14" rx="2" fill="#121110"/><text class="l" x="240" y="90" text-anchor="middle">YES</text>
+<path d="M440,100 H520" fill="none" stroke="#C8C2BA" stroke-width="1.2" marker-end="url(#gestures-dark-arrow)"/>
+<rect x="452.0" y="80" width="56" height="14" rx="2" fill="#121110"/><text class="l" x="480" y="90" text-anchor="middle">VERTICAL</text>
+<path d="M680,100 H760" fill="none" stroke="#C8C2BA" stroke-width="1.2" marker-end="url(#gestures-dark-arrow)"/>
+<rect x="710.0" y="80" width="20" height="14" rx="2" fill="#121110"/><text class="l" x="720" y="90" text-anchor="middle">NO</text>
+<path d="M120,144 V204" fill="none" stroke="#F2B155" stroke-width="1.2" marker-end="url(#gestures-dark-arrow-accent)"/>
+<rect x="124" y="168" width="50" height="14" rx="2" fill="#121110"/><text class="l" x="128" y="178" text-anchor="start">NO: TAP</text>
+<path d="M360,144 V204" fill="none" stroke="#C8C2BA" stroke-width="1.2" marker-end="url(#gestures-dark-arrow)"/>
+<rect x="364" y="168" width="68" height="14" rx="2" fill="#121110"/><text class="l" x="368" y="178" text-anchor="start">HORIZONTAL</text>
+<path d="M600,144 V204" fill="none" stroke="#C8C2BA" stroke-width="1.2" marker-end="url(#gestures-dark-arrow)"/>
+<rect x="604" y="168" width="26" height="14" rx="2" fill="#121110"/><text class="l" x="608" y="178" text-anchor="start">YES</text>
+<path d="M840,144 V204" fill="none" stroke="#C8C2BA" stroke-width="1.2" marker-end="url(#gestures-dark-arrow)"/>
+<rect x="844" y="168" width="62" height="14" rx="2" fill="#121110"/><text class="l" x="848" y="178" text-anchor="start">LEFT HALF</text>
+<path d="M920,100 H932 Q940,100 940,108 V324 Q940,332 932,332 H920" fill="none" stroke="#C8C2BA" stroke-width="1.2" marker-end="url(#gestures-dark-arrow)"/>
+<rect x="868" y="278" width="68" height="14" rx="2" fill="#121110"/><text class="l" x="932" y="288" text-anchor="end">RIGHT HALF</text>
+<text class="l" x="120" y="26" text-anchor="middle">ACTION_DOWN</text>
+<polygon points="120,56 200,100 120,144 40,100" fill="#121110"/><polygon points="120,56 200,100 120,144 40,100" fill="#1C1B19" stroke="#F2EFEA" stroke-width="1"/><text class="n" x="120" y="97" text-anchor="middle">Moved past</text><text class="n" x="120" y="114" text-anchor="middle">touch slop?</text>
+<polygon points="360,56 440,100 360,144 280,100" fill="#121110"/><polygon points="360,56 440,100 360,144 280,100" fill="#1C1B19" stroke="#F2EFEA" stroke-width="1"/><text class="n" x="360" y="97" text-anchor="middle">Which</text><text class="n" x="360" y="114" text-anchor="middle">axis?</text>
+<polygon points="600,56 680,100 600,144 520,100" fill="#121110"/><polygon points="600,56 680,100 600,144 520,100" fill="#1C1B19" stroke="#F2EFEA" stroke-width="1"/><text class="n" x="600" y="97" text-anchor="middle">Began on top</text><text class="n" x="600" y="114" text-anchor="middle">or bottom edge?</text>
+<polygon points="840,56 920,100 840,144 760,100" fill="#121110"/><polygon points="840,56 920,100 840,144 760,100" fill="#1C1B19" stroke="#F2EFEA" stroke-width="1"/><text class="n" x="840" y="97" text-anchor="middle">Which</text><text class="n" x="840" y="114" text-anchor="middle">half?</text>
+<rect x="40" y="204" width="160" height="64" rx="6" fill="#121110"/><rect x="40" y="204" width="160" height="64" rx="6" fill="#f2b155" stroke="#F2B155" stroke-width="1" fill-opacity="0.10"/><text class="n" x="120.0" y="232" text-anchor="middle">togglePlay()</text><text class="s" x="120.0" y="250" text-anchor="middle">play or pause</text>
+<rect x="280" y="204" width="160" height="64" rx="6" fill="#121110"/><rect x="280" y="204" width="160" height="64" rx="6" fill="#1C1B19" stroke="#F2EFEA" stroke-width="1"/><text class="n" x="360.0" y="232" text-anchor="middle">scrub()</text><text class="s" x="360.0" y="250" text-anchor="middle">seekTo, then show time</text>
+<rect x="760" y="204" width="160" height="64" rx="6" fill="#121110"/><rect x="760" y="204" width="160" height="64" rx="6" fill="#1C1B19" stroke="#F2EFEA" stroke-width="1"/><text class="n" x="840.0" y="232" text-anchor="middle">changeBrightness()</text><text class="s" x="840.0" y="250" text-anchor="middle">window brightness</text>
+<rect x="760" y="300" width="160" height="64" rx="6" fill="#121110"/><rect x="760" y="300" width="160" height="64" rx="6" fill="#1C1B19" stroke="#F2EFEA" stroke-width="1"/><text class="n" x="840.0" y="328" text-anchor="middle">changeVolume()</text><text class="s" x="840.0" y="346" text-anchor="middle">media stream volume</text>
+<rect x="520" y="204" width="160" height="64" rx="6" fill="#121110"/><rect x="520" y="204" width="160" height="64" rx="6" fill="#f2efea" stroke="#f2efea" stroke-width="1" fill-opacity="0.05" stroke-opacity="0.14"/><text class="n" x="600.0" y="232" text-anchor="middle">Ignored</text><text class="s" x="600.0" y="250" text-anchor="middle">reveals the system bars</text>
+<text class="c" x="40" y="328">A second finger cancels the gesture. A running drag still ends cleanly.</text>
+</svg>
