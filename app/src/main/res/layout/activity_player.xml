@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:contentDescription="@string/video_surface">
+
+    <SurfaceView
+        android:id="@+id/surface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
+
+    <!-- Not clickable: touches outside the buttons fall through to the gesture layer on root. -->
+    <FrameLayout
+        android:id="@+id/controls"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@drawable/scrim_top"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="8dp"
+            android:paddingBottom="32dp">
+
+            <ImageButton
+                android:id="@+id/back"
+                style="@style/IconButton"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@string/back"
+                android:src="@drawable/ic_back" />
+
+            <TextView
+                android:id="@+id/video_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:textColor="@color/text"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/play_pause"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_round_glass"
+            android:scaleType="fitCenter"
+            android:padding="18dp"
+            android:src="@drawable/ic_pause" />
+
+        <TextView
+            android:id="@+id/error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_hud"
+            android:padding="16dp"
+            android:textColor="@color/text"
+            android:textSize="15sp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/bottom_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@drawable/scrim_bottom"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="32dp"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:id="@+id/position"
+                style="@style/TimeText"
+                android:layout_marginStart="20dp"
+                android:text="00:00" />
+
+            <SeekBar
+                android:id="@+id/seek_bar"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:progressDrawable="@drawable/seek_progress"
+                android:splitTrack="false"
+                android:thumb="@drawable/seek_thumb" />
+
+            <TextView
+                android:id="@+id/duration"
+                style="@style/TimeText"
+                android:layout_marginEnd="20dp"
+                android:text="00:00" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/hud"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:alpha="0"
+        android:background="@drawable/bg_hud"
+        android:gravity="center"
+        android:minWidth="200dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="16dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/hud_icon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:importantForAccessibility="no" />
+
+        <ProgressBar
+            android:id="@+id/hud_level"
+            style="@android:style/Widget.Material.ProgressBar.Horizontal"
+            android:layout_width="152dp"
+            android:layout_height="4dp"
+            android:layout_marginTop="12dp"
+            android:max="1000"
+            android:progressDrawable="@drawable/seek_progress" />
+
+        <TextView
+            android:id="@+id/hud_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:fontFeatureSettings="tnum"
+            android:letterSpacing="-0.02"
+            android:textColor="@color/text"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/hud_detail"
+            style="@style/TimeText"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/muted" />
+    </LinearLayout>
+</FrameLayout>

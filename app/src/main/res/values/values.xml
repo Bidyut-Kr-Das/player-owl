@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg">#0E0E10</color>
+    <color name="surface">#1C1C20</color>
+    <color name="text">#F4F2EE</color>
+    <color name="muted">#A0A0A8</color>
+    <color name="accent">#FFB547</color>
+    <color name="on_accent">#1A1205</color>
+    <color name="glass">#D91C1C20</color>
+    <color name="track">#40FFFFFF</color>
+
+    <string name="app_name">Quiet Player</string>
+    <string name="folders">Folders</string>
+    <string name="back">Back</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="video_surface">Video. Tap to play or pause.</string>
+    <string name="permission_title">Your videos live here</string>
+    <string name="permission_body">Allow access to videos so your Download folder and other folders can show up.</string>
+    <string name="permission_action">Allow access</string>
+    <string name="no_videos_title">No videos yet</string>
+    <string name="no_videos_body">Videos on this phone appear here by folder.</string>
+    <string name="cannot_play">This file can\'t be played.</string>
+    <string name="video_unsupported">This phone can\'t decode this video\'s format.</string>
+    <plurals name="videos">
+        <item quantity="one">%d video</item>
+        <item quantity="other">%d videos</item>
+    </plurals>
+
+    <style name="Theme.Quiet" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:colorBackground">@color/bg</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:textColorPrimary">@color/text</item>
+        <item name="android:textColorSecondary">@color/muted</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.Quiet.Player">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">always</item>
+    </style>
+
+    <style name="IconButton">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+        <item name="android:scaleType">center</item>
+    </style>
+
+    <style name="TimeText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFeatureSettings">tnum</item>
+    </style>
+</resources>
