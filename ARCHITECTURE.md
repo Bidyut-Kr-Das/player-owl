@@ -22,9 +22,11 @@ Quiet Player has two screens and a few small files. It uses framework views and 
 
 A file manager can also open `PlayerActivity` directly through its `ACTION_VIEW` intent filter. This reaches files that MediaStore does not index.
 
+`LibraryActivity` passes the folder's video ids to `PlayerActivity`, in list order, for the previous and next buttons. A video opened from a file manager has no list, so those buttons stay hidden.
+
 ## How resume works
 
-The app remembers one video: its URI and position. `PlayerActivity` saves in `onStop`, which runs for every normal way out of the app, and starts the video from the saved position when the URI matches.
+The app remembers one video: its URI and position. `PlayerActivity` saves in `onStop`, which runs for every normal way out of the app, and when previous or next switches the video. It starts the video from the saved position when the URI matches.
 
 - **Finished videos are forgotten.** Closing within the last 5 seconds counts as finished, so the video restarts next time.
 - **An accidental open changes nothing.** Another video closed within 2 seconds does not replace the remembered one.

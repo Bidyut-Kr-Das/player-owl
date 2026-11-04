@@ -42,6 +42,10 @@ private const val HIDE_HUD_MS = 500L
 private const val TICK_MS = 250L
 private const val METER_MARGIN_DP = 12
 private const val MIN_BRIGHTNESS = 0.01f // Exactly 0 turns some panels fully off.
+private const val DISABLED_ALPHA = 0.38f
+
+/** Media index ids of the videos that previous and next step through. A file manager's intent has none. */
+const val EXTRA_PLAYLIST = "playlist"
 
 @OptIn(UnstableApi::class)
 class PlayerActivity : Activity() {
@@ -53,6 +57,9 @@ class PlayerActivity : Activity() {
     private lateinit var surface: SurfaceView
     private lateinit var controls: View
     private lateinit var playPause: ImageButton
+    private lateinit var previous: ImageButton
+    private lateinit var next: ImageButton
+    private lateinit var videoTitle: TextView
     private lateinit var seekBar: SeekBar
     private lateinit var position: TextView
     private lateinit var duration: TextView
@@ -64,6 +71,8 @@ class PlayerActivity : Activity() {
     private lateinit var hudTitle: TextView
     private lateinit var hudDetail: TextView
 
+    private var playlist = emptyList<Uri>()
+    private var current = 0
     private var videoSize = VideoSize.UNKNOWN
     private var seekStart: Long? = null
     private var adjustStart: Float? = null
@@ -140,6 +149,9 @@ class PlayerActivity : Activity() {
         surface = findViewById(R.id.surface)
         controls = findViewById(R.id.controls)
         playPause = findViewById(R.id.play_pause)
+        previous = findViewById(R.id.previous)
+        next = findViewById(R.id.next)
+        videoTitle = findViewById(R.id.video_title)
         seekBar = findViewById(R.id.seek_bar)
         position = findViewById(R.id.position)
         duration = findViewById(R.id.duration)
@@ -151,9 +163,17 @@ class PlayerActivity : Activity() {
         hudTitle = findViewById(R.id.hud_title)
         hudDetail = findViewById(R.id.hud_detail)
 
-        findViewById<TextView>(R.id.video_title).text = displayName(uri)
+        playlist = intent.getLongArrayExtra(EXTRA_PLAYLIST)?.map(::videoUri).orEmpty().ifEmpty { listOf(uri) }
+        current = playlist.indexOf(uri).coerceAtLeast(0)
+        if (playlist.size == 1) {
+            previous.visibility = View.GONE
+            next.visibility = View.GONE
+        }
+
         findViewById<View>(R.id.back).setOnClickListener { finish() }
         playPause.setOnClickListener { togglePlay() }
+        previous.setOnClickListener { switchTo(current - 1) }
+        next.setOnClickListener { switchTo(current + 1) }
         root.setOnClickListener { if (error.visibility != View.VISIBLE) setControlsVisible(!controlsShown) }
         root.setOnTouchListener { view, event -> onTouch(view, event) }
         root.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
@@ -176,9 +196,7 @@ class PlayerActivity : Activity() {
             .build()
         player.addListener(listener)
         player.setVideoSurfaceView(surface)
-        player.setMediaItem(MediaItem.fromUri(uri), startPosition(readResume(), uri.toString()))
-        player.prepare()
-        player.playWhenReady = true
+        playCurrent()
 
         setControlsVisible(true)
     }
@@ -188,9 +206,13 @@ class PlayerActivity : Activity() {
         if (::player.isInitialized) {
             player.pause()
             // Every way out of the app passes through here: back, home, or swiping it away from recents.
-            if (player.playerError == null) {
-                writeResume(nextResume(readResume(), intent.data.toString(), player.currentPosition, player.duration))
-            }
+            saveResume()
+        }
+    }
+
+    private fun saveResume() {
+        if (player.playerError == null) {
+            writeResume(nextResume(readResume(), playlist[current].toString(), player.currentPosition, player.duration))
         }
     }
 
@@ -242,6 +264,29 @@ class PlayerActivity : Activity() {
                 scheduleHudHide()
             }
         }
+    }
+
+    private fun switchTo(index: Int) {
+        saveResume()
+        current = index
+        playCurrent()
+    }
+
+    private fun playCurrent() {
+        val uri = playlist[current]
+        videoTitle.text = displayName(uri)
+        error.visibility = View.GONE // The last video may have failed; this one gets a fresh start.
+        playPause.visibility = View.VISIBLE
+        setNavEnabled(previous, current > 0)
+        setNavEnabled(next, current < playlist.lastIndex)
+        player.setMediaItem(MediaItem.fromUri(uri), startPosition(readResume(), uri.toString()))
+        player.prepare()
+        player.playWhenReady = true
+    }
+
+    private fun setNavEnabled(button: View, enabled: Boolean) {
+        button.isEnabled = enabled
+        button.alpha = if (enabled) 1f else DISABLED_ALPHA
     }
 
     private fun togglePlay() {
@@ -371,7 +416,7 @@ class PlayerActivity : Activity() {
     private fun showError(message: Int) {
         error.setText(message)
         error.visibility = View.VISIBLE
-        playPause.visibility = View.GONE
+        playPause.visibility = View.INVISIBLE // Keeps previous and next in place, to skip past this file.
         setControlsVisible(true)
     }
 

@@ -49,16 +49,6 @@
                 android:textSize="16sp" />
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/play_pause"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_gravity="center"
-            android:background="@drawable/bg_round_glass"
-            android:scaleType="fitCenter"
-            android:padding="18dp"
-            android:src="@drawable/ic_pause" />
-
         <TextView
             android:id="@+id/error"
             android:layout_width="wrap_content"
@@ -77,17 +67,7 @@
             android:layout_gravity="bottom"
             android:background="@drawable/scrim_bottom"
             android:orientation="vertical"
-            android:paddingTop="40dp"
-            android:paddingBottom="12dp">
-
-            <SeekBar
-                android:id="@+id/seek_bar"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:paddingHorizontal="24dp"
-                android:progressDrawable="@drawable/seek_progress"
-                android:splitTrack="false"
-                android:thumb="@drawable/seek_thumb" />
+            android:paddingTop="40dp">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -97,15 +77,58 @@
                 <TextView
                     android:id="@+id/position"
                     style="@style/TimeText"
-                    android:layout_gravity="start"
+                    android:layout_gravity="start|center_vertical"
                     android:text="00:00" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/previous"
+                        style="@style/IconButton"
+                        android:contentDescription="@string/previous_video"
+                        android:padding="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_skip_previous" />
+
+                    <ImageButton
+                        android:id="@+id/play_pause"
+                        style="@style/IconButton"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginHorizontal="12dp"
+                        android:padding="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_pause" />
+
+                    <ImageButton
+                        android:id="@+id/next"
+                        style="@style/IconButton"
+                        android:contentDescription="@string/next_video"
+                        android:padding="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_skip_next" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/duration"
                     style="@style/TimeText"
-                    android:layout_gravity="end"
+                    android:layout_gravity="end|center_vertical"
                     android:text="00:00" />
             </FrameLayout>
+
+            <SeekBar
+                android:id="@+id/seek_bar"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:paddingHorizontal="24dp"
+                android:progressDrawable="@drawable/seek_progress"
+                android:splitTrack="false"
+                android:thumb="@drawable/seek_thumb" />
         </LinearLayout>
     </FrameLayout>
 

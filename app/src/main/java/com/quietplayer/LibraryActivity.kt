@@ -152,7 +152,8 @@ class LibraryActivity : Activity() {
             folder != null -> {
                 title.text = folder.name
                 subtitle.text = "${count(folder.videos.size)}, ${size(folder.totalSize)}"
-                rows = folder.videos.map { it.toRow() }
+                val playlist = folder.videos.map { it.id }.toLongArray()
+                rows = folder.videos.map { it.toRow(playlist) }
             }
             else -> {
                 finish() // Everything in this folder was deleted while we were away.
@@ -168,8 +169,11 @@ class LibraryActivity : Activity() {
         startActivity(Intent(this@LibraryActivity, LibraryActivity::class.java).putExtra(EXTRA_FOLDER, path))
     }
 
-    private fun Video.toRow() = Row(name, size(size), DateUtils.formatElapsedTime(durationMs / 1000), id, 1) {
-        startActivity(Intent(Intent.ACTION_VIEW, videoUri(id), this@LibraryActivity, PlayerActivity::class.java))
+    private fun Video.toRow(playlist: LongArray) = Row(name, size(size), DateUtils.formatElapsedTime(durationMs / 1000), id, 1) {
+        startActivity(
+            Intent(Intent.ACTION_VIEW, videoUri(id), this@LibraryActivity, PlayerActivity::class.java)
+                .putExtra(EXTRA_PLAYLIST, playlist),
+        )
     }
 
     private fun count(n: Int) = resources.getQuantityString(R.plurals.videos, n, n)

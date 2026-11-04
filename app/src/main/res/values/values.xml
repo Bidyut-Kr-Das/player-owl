@@ -14,6 +14,8 @@
     <string name="back">Back</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
+    <string name="previous_video">Previous video</string>
+    <string name="next_video">Next video</string>
     <string name="video_surface">Video. Tap to show or hide the controls.</string>
     <string name="permission_title">Your videos live here</string>
     <string name="permission_body">Allow access to videos so your Download folder and other folders can show up.</string>
