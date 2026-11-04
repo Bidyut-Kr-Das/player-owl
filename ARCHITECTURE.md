@@ -1,6 +1,6 @@
 # Architecture
 
-Player Owl has two screens and a few small files. It uses framework views and Media3 ExoPlayer, with no UI toolkit, so the release APK stays near 2.4 MB.
+Player Owl has two screens and a few small files. It uses framework views and Media3 ExoPlayer, with no UI toolkit, so the release APK stays near 1.3 MB.
 
 ## How the pieces connect
 
@@ -47,6 +47,7 @@ A horizontal drag that starts within 48dp of the left or right edge does not see
 
 - **ExoPlayer, not libVLC or mpv.** It adds about 1 MB instead of 20 MB or more. The cost is that video codecs depend on the phone's decoders, and WMV and RMVB do not play.
 - **MediaStore, not a file browser.** One narrow permission and instant loading. Folders without videos and `.nomedia` folders do not appear.
+- **Compressed APK.** The native library and code are compressed inside the APK, which halves the download to 1.3 MB. Android unpacks the native library at install, so the installed app takes more space than the APK.
 - **No INTERNET permission.** The manifest removes it, so the app cannot reach the network.
 - **Scrubbing mode while seeking.** `setScrubbingModeEnabled` keeps the picture following the finger during a drag.
 
