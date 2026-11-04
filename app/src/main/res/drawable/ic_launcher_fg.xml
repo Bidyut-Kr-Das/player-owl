@@ -1,3 +1,16 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
-    <path android:fillColor="@color/accent" android:strokeColor="@color/accent" android:strokeWidth="6" android:strokeLineJoin="round" android:pathData="M44,38 L72,54 L44,70 Z" />
+    <!-- Owl head -->
+    <path android:fillColor="@color/accent" android:pathData="M38,24 Q45,26 48,29 Q54,27.5 60,29 Q63,26 70,24 Q72,31 72,37 Q73,44 72,54 L36,54 Q35,44 36,37 Q36,31 38,24 Z" />
+    <!-- Eyes -->
+    <path android:fillColor="@color/text" android:pathData="M38.5,38 a7.5,7.5 0 1,0 15,0 a7.5,7.5 0 1,0 -15,0 Z M54.5,38 a7.5,7.5 0 1,0 15,0 a7.5,7.5 0 1,0 -15,0 Z" />
+    <path android:fillColor="@color/on_accent" android:pathData="M42.6,39.5 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z M58.6,39.5 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z" />
+    <!-- Beak -->
+    <path android:fillColor="#FFC56B" android:strokeColor="#FFC56B" android:strokeWidth="2" android:strokeLineJoin="round" android:pathData="M52,43.5 L56,43.5 L54,46.5 Z" />
+    <!-- Clapper bar and stripes -->
+    <path android:fillColor="@color/text" android:pathData="M31.5,49 H76.5 A2.5,2.5 0 0,1 79,51.5 V55.5 A2.5,2.5 0 0,1 76.5,58 H31.5 A2.5,2.5 0 0,1 29,55.5 V51.5 A2.5,2.5 0 0,1 31.5,49 Z" />
+    <path android:fillColor="@color/on_accent" android:pathData="M35,49 H42 L37,58 H30 Z M49,49 H56 L51,58 H44 Z M63,49 H70 L65,58 H58 Z" />
+    <!-- Board, brighter than the draft so it stands out on black -->
+    <path android:fillColor="#34486B" android:pathData="M29,59.5 H79 V75 Q79,81 73,81 H35 Q29,81 29,75 Z" />
+    <!-- Play button -->
+    <path android:fillColor="@color/accent" android:strokeColor="@color/accent" android:strokeWidth="2.4" android:strokeLineJoin="round" android:pathData="M50,64.5 L50,75.5 L59,70 Z" />
 </vector>
