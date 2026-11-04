@@ -1,6 +1,6 @@
 <div align="center">
 
-# Quiet Player
+# Player Owl
 
 **A tiny Android video player. No ads. No tracking. No internet permission.**
 

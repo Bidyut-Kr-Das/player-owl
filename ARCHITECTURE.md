@@ -1,6 +1,6 @@
 # Architecture
 
-Quiet Player has two screens and a few small files. It uses framework views and Media3 ExoPlayer, with no UI toolkit, so the release APK stays near 2.4 MB.
+Player Owl has two screens and a few small files. It uses framework views and Media3 ExoPlayer, with no UI toolkit, so the release APK stays near 2.4 MB.
 
 ## How the pieces connect
 

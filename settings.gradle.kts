@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Quiet Player"
+rootProject.name = "Player Owl"
 include(":app")

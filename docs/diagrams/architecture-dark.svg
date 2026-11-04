@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="0 0 960 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="architecture-dark-title architecture-dark-desc" id="architecture-dark-root">
-<title id="architecture-dark-title">Quiet Player architecture</title>
+<title id="architecture-dark-title">Player Owl architecture</title>
 <desc id="architecture-dark-desc">PlayerActivity coordinates Gestures, PlayerMath, Resume, ExoPlayer and the audio and window controls; LibraryActivity lists videos from MediaStore and hands a video URI to PlayerActivity.</desc>
 <defs>
       <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Serif:ital@0;1&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Serif+KR:wght@400&amp;family=Noto+Sans+TC:wght@400;500;600&amp;family=Noto+Serif+TC:wght@400&amp;display=swap');

@@ -1,4 +1,4 @@
-package com.quietplayer
+package com.playerowl
 
 import kotlin.math.min
 import kotlin.math.roundToInt

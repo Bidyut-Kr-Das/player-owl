@@ -9,7 +9,7 @@
     <color name="glass">#CC262626</color>
     <color name="track">#4DFFFFFF</color>
 
-    <string name="app_name">Quiet Player</string>
+    <string name="app_name">Player Owl</string>
     <string name="folders">Folders</string>
     <string name="back">Back</string>
     <string name="play">Play</string>
@@ -29,7 +29,7 @@
         <item quantity="other">%d videos</item>
     </plurals>
 
-    <style name="Theme.Quiet" parent="android:Theme.Material.NoActionBar">
+    <style name="Theme.Owl" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/bg</item>
         <item name="android:colorBackground">@color/bg</item>
         <item name="android:colorAccent">@color/accent</item>
@@ -39,7 +39,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="Theme.Quiet.Player">
+    <style name="Theme.Owl.Player">
         <item name="android:windowBackground">@android:color/black</item>
         <item name="android:windowLayoutInDisplayCutoutMode">always</item>
     </style>

@@ -13,9 +13,9 @@
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
-        android:label="Quiet Player"
+        android:label="Player Owl"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Quiet">
+        android:theme="@style/Theme.Owl">
 
         <activity
             android:name=".LibraryActivity"
@@ -31,7 +31,7 @@
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
             android:exported="true"
             android:screenOrientation="sensorLandscape"
-            android:theme="@style/Theme.Quiet.Player">
+            android:theme="@style/Theme.Owl.Player">
             <!-- Lets a file manager open any video here, including files the media index skips. -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

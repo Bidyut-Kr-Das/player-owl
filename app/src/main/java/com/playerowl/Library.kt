@@ -1,4 +1,4 @@
-package com.quietplayer
+package com.playerowl
 
 import android.content.ContentUris
 import android.content.Context

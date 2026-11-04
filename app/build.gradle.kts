@@ -3,13 +3,13 @@ plugins {
 }
 
 android {
-    namespace = "com.quietplayer"
+    namespace = "com.playerowl"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.quietplayer"
+        applicationId = "com.playerowl"
         minSdk = 30
         targetSdk = 37
         versionCode = 1

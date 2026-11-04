@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="0 0 960 384" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="gestures-dark-title gestures-dark-desc" id="gestures-dark-root">
-<title id="gestures-dark-title">Quiet Player touch handling</title>
+<title id="gestures-dark-title">Player Owl touch handling</title>
 <desc id="gestures-dark-desc">A touch is a tap unless it moves past the slop. Horizontal drags seek. Vertical drags change brightness on the left half and volume on the right, unless they began on a system edge.</desc>
 <defs>
       <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Serif:ital@0;1&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Serif+KR:wght@400&amp;family=Noto+Sans+TC:wght@400;500;600&amp;family=Noto+Serif+TC:wght@400&amp;display=swap');
