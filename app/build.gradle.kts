@@ -8,6 +8,17 @@ android {
         version = release(37)
     }
 
+    // Release signing comes from the environment, so the keystore and its passwords never touch git.
+    val keystore = System.getenv("PLAYEROWL_KEYSTORE")
+    signingConfigs {
+        if (keystore != null) create("release") {
+            storeFile = file(keystore)
+            storePassword = System.getenv("PLAYEROWL_KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("PLAYEROWL_KEY_ALIAS")
+            keyPassword = System.getenv("PLAYEROWL_KEY_PASSWORD")
+        }
+    }
+
     defaultConfig {
         applicationId = "com.playerowl"
         minSdk = 30
@@ -21,8 +32,8 @@ android {
             optimization {
                 enable = true
             }
-            // ponytail: debug key is enough to sideload on your own phone; add a real keystore before publishing.
-            signingConfig = signingConfigs.getByName("debug")
+            // A local build without the keystore falls back to the debug key, to sideload on your own phone.
+            signingConfig = signingConfigs.getByName(if (keystore != null) "release" else "debug")
             ndk {
                 // ponytail: 64-bit only keeps the APK small; add armeabi-v7a if you ever target old 32-bit phones.
                 abiFilters += "arm64-v8a"
@@ -33,6 +44,14 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    packaging {
+        // Compressing halves the APK. Android then unpacks the native library at install,
+        // so the installed app takes more space than an uncompressed build would.
+        resources.excludes += "kotlin/**"
+        dex.useLegacyPackaging = true
+        jniLibs.useLegacyPackaging = true
     }
 }
 
