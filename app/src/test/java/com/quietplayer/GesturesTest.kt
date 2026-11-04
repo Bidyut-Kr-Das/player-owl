@@ -4,7 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class GesturesTest {
-    private val gestures = Gestures(slop = 10f)
+    private val gestures = Gestures(slop = 10f, sideEdge = 40f)
 
     private fun start(x: Float, y: Float) = gestures.down(x, y, width = 1000f, height = 500f)
 
@@ -82,6 +82,38 @@ class GesturesTest {
     @Test fun `horizontal drag in the system edge still seeks`() {
         start(200f, 5f)
         assertEquals(GestureEvent.Seek(0.1f), gestures.move(300f, 5f))
+    }
+
+    @Test fun `horizontal drag from the left side edge does not seek`() {
+        start(20f, 250f)
+        assertEquals(null, gestures.move(200f, 250f))
+        assertEquals(null, gestures.up())
+    }
+
+    @Test fun `horizontal drag from the right side edge does not seek`() {
+        start(980f, 250f)
+        assertEquals(null, gestures.move(800f, 250f))
+        assertEquals(null, gestures.up())
+    }
+
+    @Test fun `horizontal drag just inside the side edge still seeks`() {
+        start(41f, 250f)
+        assertEquals(GestureEvent.Seek(0.1f), gestures.move(141f, 250f))
+    }
+
+    @Test fun `vertical drag on the left side edge still controls brightness`() {
+        start(20f, 250f)
+        assertEquals(GestureEvent.Brightness(0.2f), gestures.move(20f, 150f))
+    }
+
+    @Test fun `vertical drag on the right side edge still controls volume`() {
+        start(980f, 250f)
+        assertEquals(GestureEvent.Volume(0.2f), gestures.move(980f, 150f))
+    }
+
+    @Test fun `tap on the side edge still counts`() {
+        start(20f, 250f)
+        assertEquals(GestureEvent.Tap, gestures.up())
     }
 
     @Test fun `second finger cancels the gesture without a tap`() {

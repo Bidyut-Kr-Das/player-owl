@@ -3,7 +3,6 @@ package com.quietplayer
 import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.graphics.Rect
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
@@ -43,6 +42,7 @@ private const val TICK_MS = 250L
 private const val METER_MARGIN_DP = 12
 private const val MIN_BRIGHTNESS = 0.01f // Exactly 0 turns some panels fully off.
 private const val DISABLED_ALPHA = 0.38f
+private const val BACK_GESTURE_EDGE_DP = 48 // Wider than the system's back zone at its highest sensitivity setting.
 
 /** Media index ids of the videos that previous and next step through. A file manager's intent has none. */
 const val EXTRA_PLAYLIST = "playlist"
@@ -141,9 +141,14 @@ class PlayerActivity : Activity() {
         super.onCreate(savedInstanceState)
         val uri = intent.data ?: return finish()
         setContentView(R.layout.activity_player)
+        // Android 14 and older shrink the content for visible bars by default, which shrinks the video with it.
+        window.setDecorFitsSystemWindows(false)
         volumeControlStream = AudioManager.STREAM_MUSIC
         audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        gestures = Gestures(ViewConfiguration.get(this).scaledTouchSlop.toFloat())
+        gestures = Gestures(
+            ViewConfiguration.get(this).scaledTouchSlop.toFloat(),
+            BACK_GESTURE_EDGE_DP * resources.displayMetrics.density,
+        )
 
         root = findViewById(R.id.root)
         surface = findViewById(R.id.surface)
@@ -178,7 +183,6 @@ class PlayerActivity : Activity() {
         root.setOnTouchListener { view, event -> onTouch(view, event) }
         root.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             root.post(::fitVideo) // Changing a child's size during layout can be dropped; do it right after.
-            excludeBackGesture()
         }
         seekBar.setOnSeekBarChangeListener(seekBarListener)
         applyInsets()
@@ -430,17 +434,6 @@ class PlayerActivity : Activity() {
         }
     }
 
-    /** Stops the edge back gesture from eating a seek drag. Android honors up to 200dp per edge. */
-    private fun excludeBackGesture() {
-        val span = (200 * resources.displayMetrics.density).toInt()
-        val edge = (32 * resources.displayMetrics.density).toInt()
-        val top = (root.height - span) / 2
-        root.systemGestureExclusionRects = listOf(
-            Rect(0, top, edge, top + span),
-            Rect(root.width - edge, top, root.width, top + span),
-        )
-    }
-
     private fun applyInsets() {
         val top = findViewById<View>(R.id.top_bar)
         val bottom = findViewById<View>(R.id.bottom_bar)
@@ -452,6 +445,8 @@ class PlayerActivity : Activity() {
             safeRight = safe.right
             top.setPadding(safe.left, topPad + safe.top, safe.right, top.paddingBottom)
             bottom.setPadding(safe.left, bottom.paddingTop, safe.right, bottomPad + safe.bottom)
+            // BEHAVIOR_DEFAULT leaves revealed bars on screen, so put them away again.
+            if (insets.isVisible(WindowInsets.Type.systemBars())) root.postDelayed(::hideSystemBars, HIDE_CONTROLS_MS)
             insets
         }
     }
@@ -459,7 +454,8 @@ class PlayerActivity : Activity() {
     private fun hideSystemBars() {
         window.insetsController?.run {
             hide(WindowInsets.Type.systemBars())
-            systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            // The transient behavior spends the first edge swipe on showing the bars, so back would take two swipes.
+            systemBarsBehavior = WindowInsetsController.BEHAVIOR_DEFAULT
         }
     }
 

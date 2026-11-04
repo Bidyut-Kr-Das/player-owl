@@ -36,9 +36,11 @@ The app remembers one video: its URI and position. `PlayerActivity` saves in `on
 
 `Gestures` locks a drag to one action as soon as the finger passes the touch slop. The action cannot change until the finger lifts.
 
+A horizontal drag that starts within 48dp of the left or right edge does not seek, so the system back gesture works there. Vertical drags and taps still work in those zones.
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/gestures-dark.svg">
-  <img alt="A touch that stays inside the slop is a tap. A horizontal drag seeks. A vertical drag from the top or bottom edge is ignored because it reveals the system bars. Other vertical drags change brightness on the left half and volume on the right half." src="docs/diagrams/gestures-light.svg">
+  <img alt="A touch that stays inside the slop is a tap. A horizontal drag seeks, unless it starts at a side edge. A vertical drag from the top or bottom edge is ignored because it reveals the system bars. Other vertical drags change brightness on the left half and volume on the right half." src="docs/diagrams/gestures-light.svg">
 </picture>
 
 ## Decisions

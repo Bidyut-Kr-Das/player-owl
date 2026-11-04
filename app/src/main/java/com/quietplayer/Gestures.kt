@@ -13,7 +13,7 @@ sealed interface GestureEvent {
 }
 
 /** Turns raw touch points into player gestures. Knows nothing about Android or the player. */
-class Gestures(private val slop: Float) {
+class Gestures(private val slop: Float, private val sideEdge: Float) {
     private enum class Mode { IDLE, PENDING, SEEK, VOLUME, BRIGHTNESS, IGNORED }
 
     private var mode = Mode.IDLE
@@ -57,7 +57,9 @@ class Gestures(private val slop: Float) {
     private fun classify(dx: Float, dy: Float) {
         if (hypot(dx, dy) <= slop) return
         val startedOnSystemEdge = startY < height * EDGE || startY > height * (1 - EDGE)
+        val startedOnSideEdge = startX < sideEdge || startX > width - sideEdge
         mode = when {
+            abs(dx) > abs(dy) && startedOnSideEdge -> Mode.IGNORED // Left to the system's back gesture.
             abs(dx) > abs(dy) -> Mode.SEEK
             startedOnSystemEdge -> Mode.IGNORED // The swipe that reveals the system bars.
             startX < width / 2 -> Mode.BRIGHTNESS

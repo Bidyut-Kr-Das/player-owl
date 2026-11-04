@@ -20,7 +20,7 @@
 | Single tap | Show or hide the controls |
 | Swipe up or down on the right | Volume |
 | Swipe up or down on the left | Brightness |
-| Drag left or right | Seek |
+| Drag left or right, starting away from the side edges | Seek |
 
 ## Resume
 
