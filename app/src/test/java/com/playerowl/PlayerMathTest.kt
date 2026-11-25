@@ -20,8 +20,9 @@ class PlayerMathTest {
         assertEquals(3_600_000L, seekTarget(3_590_000L, 1f, 3_600_000L))
     }
 
-    @Test fun `unknown duration leaves position alone`() {
-        assertEquals(5_000L, seekTarget(5_000L, 1f, 0L))
+    @Test fun `unknown duration still seeks two minutes per swipe, not before the start`() {
+        assertEquals(125_000L, seekTarget(5_000L, 1f, 0L))
+        assertEquals(0L, seekTarget(5_000L, -1f, 0L))
     }
 
     @Test fun `level adds change and clamps at both ends`() {

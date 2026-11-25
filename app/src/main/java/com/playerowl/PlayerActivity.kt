@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.OpenableColumns
 import android.provider.Settings
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceView
 import android.view.View
@@ -25,6 +26,7 @@ import android.widget.TextView
 import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
+import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -33,6 +35,10 @@ import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.extractor.DefaultExtractorsFactory
+import androidx.media3.extractor.mp4.FragmentedMp4Extractor
+import androidx.media3.session.MediaSession
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -50,6 +56,7 @@ const val EXTRA_PLAYLIST = "playlist"
 @OptIn(UnstableApi::class)
 class PlayerActivity : Activity() {
     private lateinit var player: ExoPlayer
+    private var session: MediaSession? = null
     private lateinit var audio: AudioManager
     private lateinit var gestures: Gestures
 
@@ -122,6 +129,8 @@ class PlayerActivity : Activity() {
         override fun onPlaybackStateChanged(state: Int) {
             if (state == Player.STATE_READY) {
                 seekBar.max = player.duration.coerceAtLeast(0).toInt()
+                // Some fragmented MP4 files can neither seek nor state a duration.
+                seekBar.isEnabled = player.isCurrentMediaItemSeekable && player.duration != C.TIME_UNSET
                 duration.text = formatTime(player.duration)
             }
             if (state == Player.STATE_ENDED) setControlsVisible(true)
@@ -134,7 +143,10 @@ class PlayerActivity : Activity() {
             }
         }
 
-        override fun onPlayerError(e: PlaybackException) = showError(R.string.cannot_play)
+        override fun onPlayerError(e: PlaybackException) {
+            Log.w("PlayerOwl", "Playback failed: ${e.errorCodeName}", e)
+            showError(R.string.cannot_play)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -191,6 +203,14 @@ class PlayerActivity : Activity() {
         player = ExoPlayer.Builder(
             this,
             DefaultRenderersFactory(this).setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON),
+            DefaultMediaSourceFactory(
+                this,
+                Mp4FixFactory(
+                    // Fragmented MP4 downloads often have no 'sidx' index; without 'mfra' they cannot seek at all.
+                    DefaultExtractorsFactory()
+                        .setFragmentedMp4ExtractorFlags(FragmentedMp4Extractor.FLAG_READ_MFRA_FOR_SEEK_MAP),
+                ),
+            ),
         )
             .setAudioAttributes(
                 AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.AUDIO_CONTENT_TYPE_MOVIE).build(),
@@ -205,8 +225,33 @@ class PlayerActivity : Activity() {
         setControlsVisible(true)
     }
 
+    // The session lives only while the screen shows, so a headset play after Home cannot start hidden audio.
+    override fun onStart() {
+        super.onStart()
+        if (::player.isInitialized) session = MediaSession.Builder(this, sessionPlayer())
+            .setId(hashCode().toString()) // Two players at once would clash on the default id and crash.
+            .build()
+    }
+
+    /** Next and previous step through the app's playlist; the player itself holds one video. */
+    private fun sessionPlayer() = object : ForwardingPlayer(player) {
+        private val extra = Player.Commands.Builder()
+            .addAll(Player.COMMAND_SEEK_TO_NEXT, Player.COMMAND_SEEK_TO_PREVIOUS).build()
+
+        override fun getAvailableCommands() = super.getAvailableCommands().buildUpon().addAll(extra).build()
+        override fun isCommandAvailable(command: Int) = extra.contains(command) || super.isCommandAvailable(command)
+        override fun seekToNext() {
+            if (current < playlist.lastIndex) switchTo(current + 1)
+        }
+        override fun seekToPrevious() {
+            if (current > 0) switchTo(current - 1)
+        }
+    }
+
     override fun onStop() {
         super.onStop()
+        session?.release()
+        session = null
         if (::player.isInitialized) {
             player.pause()
             // Every way out of the app passes through here: back, home, or swiping it away from recents.
@@ -351,6 +396,7 @@ class PlayerActivity : Activity() {
     }
 
     private fun scrub(fraction: Float) {
+        if (!player.isCurrentMediaItemSeekable) return // Media3 turns any seek on such a file into a restart.
         val start = seekStart ?: player.currentPosition.also {
             seekStart = it
             player.setScrubbingModeEnabled(true)
@@ -470,5 +516,6 @@ class PlayerActivity : Activity() {
         return name ?: uri.lastPathSegment.orEmpty()
     }
 
-    private fun formatTime(ms: Long) = DateUtils.formatElapsedTime(ms.coerceAtLeast(0) / 1000)
+    private fun formatTime(ms: Long) =
+        if (ms == C.TIME_UNSET) "--:--" else DateUtils.formatElapsedTime(ms.coerceAtLeast(0) / 1000)
 }

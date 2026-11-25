@@ -23,8 +23,8 @@ android {
         applicationId = "com.playerowl"
         minSdk = 30
         targetSdk = 37
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
     }
 
     buildTypes {
@@ -56,9 +56,14 @@ android {
 }
 
 dependencies {
-    implementation("androidx.media3:media3-exoplayer:1.9.0")
+    // 1.11 reads the 'mfra' box, so fragmented MP4 downloads without a 'sidx' index can seek.
+    implementation("androidx.media3:media3-exoplayer:1.11.1")
+    // Bluetooth, headset and lock screen play, pause, next and previous.
+    implementation("androidx.media3:media3-session:1.11.1")
     // Prebuilt FFmpeg audio decoders: AC3, E-AC3, DTS, TrueHD. Phones often lack these, and MKV files often use them.
-    // The version must match media3. GPLv3: publishing the app means publishing its source.
+    // The version should match media3. shortcut: no 1.11 build exists yet, so 1.9.0+1 runs on media3 1.11.1,
+    // not yet tested with an AC3/DTS file; move to the matching version when jellyfin publishes it.
+    // GPLv3: publishing the app means publishing its source.
     implementation("org.jellyfin.media3:media3-ffmpeg-decoder:1.9.0+1")
 
     testImplementation("junit:junit:4.13.2")

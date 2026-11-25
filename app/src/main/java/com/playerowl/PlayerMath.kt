@@ -6,7 +6,8 @@ import kotlin.math.roundToInt
 private const val FULL_SWIPE_MS = 120_000L
 
 fun seekTarget(startMs: Long, fraction: Float, durationMs: Long): Long {
-    if (durationMs <= 0) return startMs
+    // Some fragmented MP4 files can seek but state no duration; the player stops at the real end.
+    if (durationMs <= 0) return (startMs + (fraction * FULL_SWIPE_MS).toLong()).coerceAtLeast(0)
     val span = min(FULL_SWIPE_MS, durationMs)
     return (startMs + (fraction * span).toLong()).coerceIn(0, durationMs)
 }
