@@ -12,6 +12,20 @@
         android:layout_height="match_parent"
         android:layout_gravity="center" />
 
+    <!-- Below the controls, so the bottom bar covers it only while it shows. -->
+    <TextView
+        android:id="@+id/subtitles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginHorizontal="48dp"
+        android:layout_marginBottom="32dp"
+        android:gravity="center"
+        android:shadowColor="@android:color/black"
+        android:shadowRadius="6"
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
+
     <!-- Not clickable: touches outside the buttons fall through to the gesture layer on root. -->
     <FrameLayout
         android:id="@+id/controls"
@@ -47,6 +61,13 @@
                 android:maxLines="1"
                 android:textColor="@color/text"
                 android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/more"
+                style="@style/IconButton"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="@string/audio_and_subtitles"
+                android:src="@drawable/ic_more" />
         </LinearLayout>
 
         <TextView

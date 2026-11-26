@@ -10,6 +10,7 @@ import android.provider.OpenableColumns
 import android.provider.Settings
 import android.text.format.DateUtils
 import android.util.Log
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.SurfaceView
 import android.view.View
@@ -20,6 +21,7 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.ProgressBar
 import android.widget.SeekBar
 import android.widget.TextView
@@ -27,11 +29,15 @@ import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.ForwardingPlayer
+import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.Tracks
 import androidx.media3.common.VideoSize
+import androidx.media3.common.text.CueGroup
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
@@ -77,6 +83,7 @@ class PlayerActivity : Activity() {
     private lateinit var meterLevel: ProgressBar
     private lateinit var hudTitle: TextView
     private lateinit var hudDetail: TextView
+    private lateinit var subtitles: TextView
 
     private var playlist = emptyList<Uri>()
     private var current = 0
@@ -143,6 +150,10 @@ class PlayerActivity : Activity() {
             }
         }
 
+        override fun onCues(cueGroup: CueGroup) {
+            subtitles.text = cueGroup.cues.mapNotNull { it.text }.joinToString("\n")
+        }
+
         override fun onPlayerError(e: PlaybackException) {
             Log.w("PlayerOwl", "Playback failed: ${e.errorCodeName}", e)
             showError(R.string.cannot_play)
@@ -179,6 +190,7 @@ class PlayerActivity : Activity() {
         meterLevel = findViewById(R.id.meter_level)
         hudTitle = findViewById(R.id.hud_title)
         hudDetail = findViewById(R.id.hud_detail)
+        subtitles = findViewById(R.id.subtitles)
 
         playlist = intent.getLongArrayExtra(EXTRA_PLAYLIST)?.map(::videoUri).orEmpty().ifEmpty { listOf(uri) }
         current = playlist.indexOf(uri).coerceAtLeast(0)
@@ -188,6 +200,7 @@ class PlayerActivity : Activity() {
         }
 
         findViewById<View>(R.id.back).setOnClickListener { finish() }
+        findViewById<View>(R.id.more).setOnClickListener(::showTrackMenu)
         playPause.setOnClickListener { togglePlay() }
         previous.setOnClickListener { switchTo(current - 1) }
         next.setOnClickListener { switchTo(current + 1) }
@@ -331,6 +344,57 @@ class PlayerActivity : Activity() {
         player.setMediaItem(MediaItem.fromUri(uri), startPosition(readResume(), uri.toString()))
         player.prepare()
         player.playWhenReady = true
+    }
+
+    /** Audio and Subtitles submenus, built from the tracks of the video that plays now. */
+    private fun showTrackMenu(anchor: View) {
+        val popup = PopupMenu(this, anchor)
+        val tracks = player.currentTracks
+        for ((type, title) in listOf(C.TRACK_TYPE_AUDIO to R.string.audio, C.TRACK_TYPE_TEXT to R.string.subtitles)) {
+            val menu = popup.menu.addSubMenu(title)
+            val checked = mutableListOf<MenuItem>()
+            var number = 0
+            if (type == C.TRACK_TYPE_TEXT) {
+                val off = menu.add(R.string.off).setOnMenuItemClickListener { selectTrack(type, null) }
+                if (!tracks.isTypeSelected(type)) checked += off
+            }
+            for (group in tracks.groups) {
+                if (group.type != type) continue
+                for (i in 0 until group.length) {
+                    val format = group.getTrackFormat(i)
+                    // The player also plays tracks beyond the phone's stated limits, like 5.1 audio, so list them too.
+                    if (!group.isTrackSupported(i, true) || isImageSubtitle(format)) continue
+                    val name = trackLabel(format.label, format.language, getString(R.string.track_number, ++number))
+                    val item = menu.add(name).setOnMenuItemClickListener {
+                        selectTrack(type, TrackSelectionOverride(group.mediaTrackGroup, i))
+                    }
+                    if (group.isTrackSelected(i)) checked += item
+                }
+            }
+            // Checkable only after all items exist, so each submenu works as one radio group.
+            menu.setGroupCheckable(0, true, true)
+            checked.forEach { it.isChecked = true }
+        }
+        // Keep the controls, and with them the anchor, on screen while the menu is open.
+        root.removeCallbacks(hideControls)
+        popup.setOnDismissListener { syncPlayState() }
+        popup.show()
+    }
+
+    // shortcut: the subtitle view draws only text, so picture subtitles (PGS, VobSub, DVB) stay hidden; render cue bitmaps if a file needs them.
+    private fun isImageSubtitle(format: Format): Boolean {
+        // Subtitles parsed while extracting carry their original type in codecs.
+        val mime = if (format.sampleMimeType == MimeTypes.APPLICATION_MEDIA3_CUES) format.codecs else format.sampleMimeType
+        return mime in setOf(MimeTypes.APPLICATION_PGS, MimeTypes.APPLICATION_VOBSUB, MimeTypes.APPLICATION_DVBSUBS)
+    }
+
+    /** A null override turns the type off, which only subtitles offer. */
+    private fun selectTrack(type: Int, override: TrackSelectionOverride?): Boolean {
+        player.trackSelectionParameters = player.trackSelectionParameters.buildUpon()
+            .setTrackTypeDisabled(type, override == null)
+            .apply { if (override == null) clearOverridesOfType(type) else setOverrideForType(override) }
+            .build()
+        return true
     }
 
     private fun setNavEnabled(button: View, enabled: Boolean) {

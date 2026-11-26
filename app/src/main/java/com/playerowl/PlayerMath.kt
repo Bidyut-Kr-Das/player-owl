@@ -27,3 +27,9 @@ fun fitInside(videoW: Int, videoH: Int, pixelRatio: Float, boxW: Int, boxH: Int)
     return if (ratio > boxW.toFloat() / boxH) boxW to (boxW / ratio).roundToInt()
     else (boxH * ratio).roundToInt() to boxH
 }
+
+/** Menu name of an audio or subtitle track: its language, then its own label, e.g. "Hindi · Stereo". */
+fun trackLabel(label: String?, language: String?, fallback: String): String {
+    val languageName = language?.takeIf { it != "und" }?.let { java.util.Locale.forLanguageTag(it).displayName }
+    return listOfNotNull(languageName, label).filter { it.isNotBlank() }.distinct().joinToString(" · ").ifEmpty { fallback }
+}

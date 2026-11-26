@@ -61,4 +61,17 @@ class PlayerMathTest {
         assertEquals(null, meterX(GestureEvent.SeekEnd, 40f, 960f, 30f))
         assertEquals(null, meterX(GestureEvent.AdjustEnd, 40f, 960f, 30f))
     }
+
+    @Test fun `track label names the language then the label`() {
+        assertEquals("Hindi · Stereo", trackLabel("Stereo", "hi", "Track 1"))
+    }
+
+    @Test fun `track label shows a label equal to the language once`() {
+        assertEquals("English", trackLabel("English", "en", "Track 1"))
+    }
+
+    @Test fun `track label falls back when nothing names the track`() {
+        assertEquals("Track 2", trackLabel(null, "und", "Track 2"))
+        assertEquals("Track 3", trackLabel(" ", null, "Track 3"))
+    }
 }

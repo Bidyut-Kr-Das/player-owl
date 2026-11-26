@@ -23,6 +23,11 @@
     <string name="no_videos_title">No videos yet</string>
     <string name="no_videos_body">Videos on this phone appear here by folder.</string>
     <string name="cannot_play">This file can\'t be played.</string>
+    <string name="audio_and_subtitles">Audio and subtitles</string>
+    <string name="audio">Audio</string>
+    <string name="subtitles">Subtitles</string>
+    <string name="off">Off</string>
+    <string name="track_number">Track %d</string>
     <string name="video_unsupported">This phone can\'t decode this video\'s format.</string>
     <plurals name="videos">
         <item quantity="one">%d video</item>
